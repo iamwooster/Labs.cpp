@@ -1,0 +1,129 @@
+// Lab3.Bogatyrev.IU8-22.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include "conio.h"
+#include <iostream>
+//#include <string>
+#include <ctime>
+#pragma warning (disable:4244)
+using namespace std;
+
+class Array
+{
+  int length;
+	int * arr;
+public:
+	//перегрузка операции сложения - только как дружественная функция (два параметра)
+	friend Array& operator+(Array&, Array&);
+	//конструктор без параметров
+	Array();
+	Array(int *, int);
+	//деструктор
+	~Array() {if (length>0) delete [] arr;}
+	//перегрузка обращения по индексу - только как функция-член класса
+	int& operator[](int i) { return arr[i]; }
+};
+
+int n1=0,n2=0,n3=0,lsum=0,msum=0;
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	cout << "Enter the first array dimension: ";
+	cin >> n1;
+	cout << "Enter the second array dimension: ";
+	cin >> n2;
+	if ((n1<0)||(n2<0))
+	{
+		cout << "Error. Incorrect array length." << endl;
+		_getch();
+		return 0;
+	}
+	cout << endl;
+	srand(time(NULL));
+	//создаем первый массив...
+	int *x1=new int[n1];
+	for (int i=0;i<n1;i++)
+	{
+		
+		x1[i]=rand()%100;
+		cout << x1[i] << "\t";
+	}
+	Array arr1(x1,n1);
+	//... и второй
+	int *x2=new int[n2];
+	for (int i=0;i<n2;i++) 
+	{
+		x2[i]=rand()%100;
+	}
+	Array arr2(x2,n2);
+	cout << endl;
+	for (int i=0;i<n2;i++) cout << arr2[i] << "\t";
+	cout << endl << endl;
+	Array arr3;
+	lsum=max(n1,n2);
+	msum=min(n1,n2);
+	//вызов перегруженного оператора
+	arr3=arr1+arr2;
+	cout << "Addition overload demonstration... " << endl << endl;
+	for (int i=0;i<lsum;i++) cout << arr3[i] << "\t";
+	cout << endl << endl << "Request array element overload demonstration..." << endl <<"Enter index of the first array number to change: ";
+	cin >> n3;
+	if ((n3<0)||(n3>(n1-1)))
+	{
+		cout << "Error. Incorrect index." << endl;
+		_getch();
+		return 0;
+	}
+	//демонстрация перегрузки обращения по индексу
+	int tempx;
+	tempx=arr1[n3-1];
+	arr1[n3-1]=rand()%100;
+	cout << endl << "New first array:" << endl;
+	for (int i=0;i<n1;i++) cout << arr1[i] << "\t";
+	cout << endl << endl << tempx <<" changed to " << arr1[n3-1];
+
+	_getch();
+	return 0;
+}
+
+//конструктор создания массива
+Array::Array(int *arrx, int ln): length(ln), arr(new int[ln])
+{
+	for (int i = 0; i<length; i++) arr[i] = arrx[i];
+	//cout << "\nArray was created...\n";
+}
+
+//конструктор без параметров
+Array::Array():length(0),arr(0)
+{
+	//cout <<"\nEmpty array created...\n";
+}
+
+//перегрузка оператора сложения
+Array& operator+(Array& x1, Array& x2)
+{
+	int *temparr=new int[lsum];
+	for (int i = 0; i<msum; i++) temparr[i] = x1[i]+x2[i];
+	for (int i=msum; i<lsum; i++) 
+	{ 
+		if (lsum==n1) temparr[i]=x1[i];
+		else temparr[i]=x2[i];
+	}
+	Array *arrt = new Array(temparr,lsum);
+	delete [] temparr;
+	return *arrt;
+}
+
+//максимальная/минимальная длина массивов
+int max (int x, int y)
+{
+	if (x>=y) return x;
+	else return y;
+}
+
+int min (int x, int y)
+{
+	if (x<y) return x;
+	else return y;
+}
