@@ -1,0 +1,94 @@
+// Lab2.Bogatyrev.IU8-22.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include "conio.h"
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <ctime>
+using namespace std;
+
+
+class product
+{
+  string name;
+	int price, amount;
+public:
+	//конструктор
+	product(string="Unknown", int=0, int=0);
+	//деструктор
+	~product();
+	//функция наполнения обьектов данными
+	void productdata(int n);
+	//общая стоимость одного из товаров
+	inline int productprice(int pr, int am) {return (pr*am);}
+	//функции доступа
+	inline int getprice() {return price;}
+	inline int getamount() {return amount;}
+	inline string getname() {return name;}
+};
+
+//общая стоимость всех товаров
+int totalprice=0;
+//число товаров
+int n=0, tp;
+
+int main(int argc, char* argv[])
+{
+	srand(time(NULL));
+	cout << "Enter number of products: ";
+	cin >> n;
+	cout << endl;
+
+	//создание массив экземпляров класса размерности n
+	product* products = new product[n];
+
+	//заполнение экземпляров данными
+	for (int i=0; i<n; i++) 
+	{
+		tp=i+1;
+		products[i].productdata(i);
+	}
+
+	cout << endl << endl << n << " products was created.\n\n";
+	cout << "\n#Product\tName\t\t\tAmount\t\tPrice\n";
+	cout << "----------------------------------------------------------------\n";
+	for (int i=1; i<=n; i++)
+		cout << i << "\t\t" << products[i-1].getname() << "\t\t" << products[i-1].getamount() << "\t\t" << products[i-1].getprice() << endl;
+	cout << "----------------------------------------------------------------" << endl;
+	cout << "\nFull price of shop products is " << totalprice;
+	cout << endl << endl;
+
+	delete[] products;
+	
+
+	_getch();
+	return 0;
+}
+
+product::product(string nm, int pr, int am)
+{
+	name=nm;
+	price=pr;
+	amount=am;
+}
+
+product::~product()
+{
+	//cout << " Deleting product... " << endl;
+}
+
+void product::productdata(int n)
+{
+	stringstream strs;
+	string s;
+	strs << tp;
+	strs >> s;
+	name="Product "+s;
+	amount=rand()%100;
+	price=rand()%100;
+	int temp = productprice(price,amount);
+	totalprice=totalprice+temp;
+	cout << "Total price of " << name << " in shop is: " << temp << "\n\n";
+}
