@@ -108,7 +108,6 @@ int main(int argc, char* argv[])
 	rectangle *prc=&rc;
 	cout << "RECTANGLE" << endl;
 	//вызов функций базового класса
-	prc->size();
 	prc->data_print();
 	cout << endl << "square " << prc->size();
 	cout << endl << endl;
